@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ardene – 12 Days of Christmas</title>
-
-<!-- 🔧 Favicon -->
-<link rel="icon" href="https://imgur.com/tNTHyxs.png" type="image/png" />
-
-<!-- Fuente -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+<link rel="icon" href="https://imgur.com/tNTHyxs.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root {
@@ -17,7 +13,6 @@
   --pink-dark: #ff8ca4;
   --gold: #ffd700;
 }
-
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
@@ -26,91 +21,63 @@ body {
   position: relative;
 }
 
-/* ❄️ Nieve + ✨ Destellos dorados */
-canvas#sparkles,
-.snow {
+/* Fondo y efectos */
+#sparkles, #snowCanvas {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
   pointer-events: none;
   z-index: 0;
 }
 
-.flake {
-  position: absolute;
-  background: #fff;
-  border-radius: 50%;
-  opacity: 0.8;
-  animation: fall linear infinite;
-}
-
-@keyframes fall {
-  0% { transform: translateY(0); opacity: 1; }
-  100% { transform: translateY(100vh); opacity: 0.2; }
-}
-
-/* === Header === */
+/* Header */
 header {
   text-align: center;
   padding: 1.5rem 1rem;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255,255,255,0.9);
   border-bottom: 2px solid var(--pink-dark);
   position: relative;
   z-index: 2;
 }
 
 header img {
-  width: 270px; /* ⬆️ aumentado 50% */
+  width: 270px; /* Aumentado 50% */
   height: auto;
 }
 
 h1 {
-  margin: 0.4rem 0;
+  margin: .4rem 0;
   font-weight: 700;
   font-size: 1.8rem;
   color: #111;
 }
 
-p.subtitle {
-  margin: 0;
-  color: #333;
-  font-size: 1rem;
-}
+p.subtitle { margin: 0; color: #333; font-size: 1rem; }
+p.counter { margin-top: .5rem; color: var(--pink-dark); font-weight: 600; }
 
-p.counter {
-  margin-top: 0.5rem;
-  color: var(--pink-dark);
-  font-weight: 600;
-}
-
-/* Bienvenida */
 .welcome {
   position: fixed;
-  top: 35%;
-  left: 50%;
+  top: 35%; left: 50%;
   transform: translate(-50%, -50%);
   background: white;
   color: #111;
   padding: 25px 40px;
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   z-index: 999;
   font-weight: 600;
   font-size: 1.1rem;
   opacity: 0;
   animation: fadeInOut 2.8s ease forwards;
 }
-
 @keyframes fadeInOut {
-  0% { opacity: 0; }
-  10% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { opacity: 0; }
+  0%{opacity:0;}
+  10%{opacity:1;}
+  80%{opacity:1;}
+  100%{opacity:0;}
 }
 
-/* === Calendario === */
+/* Calendario */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -131,22 +98,12 @@ p.counter {
   font-weight: 700;
   font-size: 1.5rem;
   color: #111;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
   cursor: pointer;
   transition: all 0.25s;
 }
-
-.day:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.day.locked {
-  background: #f5f5f5;
-  color: #aaa;
-  border-color: #ddd;
-  cursor: not-allowed;
-}
+.day:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+.day.locked { background: #f5f5f5; color: #aaa; border-color: #ddd; cursor: not-allowed; }
 
 /* Botón */
 .btn-points {
@@ -159,28 +116,26 @@ p.counter {
   font-weight: 700;
   border-radius: 12px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s;
 }
 .btn-points:hover { background: var(--gold); color: #111; }
 
 footer {
   text-align: center;
-  font-size: 0.9rem;
+  font-size: .9rem;
   padding: 30px 10px;
   color: #555;
 }
 
 /* Modal */
 .modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
   display: none;
   align-items: center;
   justify-content: center;
   z-index: 10;
 }
-
 .modal {
   background: #fff;
   border: 3px solid var(--pink-dark);
@@ -188,15 +143,13 @@ footer {
   padding: 20px;
   max-width: 600px;
   text-align: left;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
-
 .modal h2 { margin-top: 0; color: #111; }
 .modal .promo { color: var(--pink-dark); font-weight: 600; }
 .modal .close {
   background: var(--pink-dark);
-  border: none;
-  color: white;
+  border: none; color: white;
   padding: 8px 16px;
   font-weight: 600;
   border-radius: 8px;
@@ -209,12 +162,12 @@ footer {
 <body>
 
 <canvas id="sparkles"></canvas>
-<div class="snow" id="snow"></div>
+<canvas id="snowCanvas"></canvas>
 
 <div class="welcome">🎄 ¡Bienvenida al reto <b>12 Days of Christmas</b>, Ardene Girl! 💖</div>
 
 <header>
-  <img src="https://imgur.com/tNTHyxs.png" alt="Ardene Logo" />
+  <img src="https://imgur.com/tNTHyxs.png" alt="Ardene Logo">
   <h1>12 Days of Christmas</h1>
   <p class="subtitle">12 días, 12 retos, 12 oportunidades de brillar ✨</p>
   <p class="counter" id="counter"></p>
@@ -227,7 +180,6 @@ footer {
 
 <footer>© Ardene | Hecho con 💖 para nuestros equipos de tienda</footer>
 
-<!-- Modal día -->
 <div class="modal-backdrop" id="modalBg">
   <div class="modal">
     <button class="close" id="closeModal">Cerrar</button>
@@ -237,7 +189,6 @@ footer {
   </div>
 </div>
 
-<!-- Modal reglas -->
 <div class="modal-backdrop" id="rulesBg">
   <div class="modal">
     <button class="close" id="closeRules">Cerrar</button>
@@ -258,6 +209,7 @@ footer {
 </div>
 
 <script>
+// Contador
 const counterEl=document.getElementById('counter');
 function updateCountdown(){
   const today=new Date();
@@ -267,8 +219,9 @@ function updateCountdown(){
 }
 updateCountdown();
 
-// 🎁 Retos
-const retos=[["Lingerie Love 💕","30% OFF Lingerie","Gana la asociada que venda más unidades de Lingerie hoy."],
+// Retos
+const retos=[
+["Lingerie Love 💕","30% OFF Lingerie","Gana la asociada que venda más unidades de Lingerie hoy."],
 ["Shine Bright ✨","3x2 Jewelry","Gana la asociada que venda más unidades de Jewelry."],
 ["Bag Lovers 🎒","20% OFF Bags & Wallets","La primera en lograr 5 transacciones con Bags/Wallets."],
 ["Step Into Style 👟","BOGO 50% Footwear","1 punto por cada ticket con calzado promo."],
@@ -283,15 +236,11 @@ const retos=[["Lingerie Love 💕","30% OFF Lingerie","Gana la asociada que vend
 ];
 
 const cal=document.getElementById('calendar');
-const today=new Date();
-let unlocked=(today.getMonth()===11)?Math.min(today.getDate(),12):12; // modo demo desbloqueado
-
 for(let i=1;i<=12;i++){
   const box=document.createElement('div');
   box.className='day';
   box.textContent=i;
-  if(i>unlocked) box.classList.add('locked');
-  box.onclick=()=>{if(i<=unlocked) openModal(i);};
+  box.onclick=()=>openModal(i);
   cal.appendChild(box);
 }
 
@@ -308,50 +257,63 @@ function openModal(i){
   mDesc.textContent=r[2];
   modalBg.style.display='flex';
 }
-
 const rulesBg=document.getElementById('rulesBg');
 document.getElementById('rulesBtn').onclick=()=>rulesBg.style.display='flex';
 document.getElementById('closeRules').onclick=()=>rulesBg.style.display='none';
 rulesBg.onclick=e=>{if(e.target===rulesBg) rulesBg.style.display='none';};
 
-// ❄️ Genera copos de nieve
-(function snow(){
-  const s=document.getElementById('snow');
-  for(let i=0;i<60;i++){
-    const f=document.createElement('div');
-    f.className='flake';
-    const size=4+Math.random()*6;
-    Object.assign(f.style,{
-      top:-10+'px',
-      left:Math.random()*100+'vw',
-      width:size+'px',
-      height:size+'px',
-      animationDuration:(8+Math.random()*8)+'s',
-      animationDelay:Math.random()*5+'s'
-    });
-    s.appendChild(f);
-  }
-})();
+// ❄️ Nieve con partículas
+const snowCanvas=document.getElementById('snowCanvas');
+const sctx=snowCanvas.getContext('2d');
+function resizeSnow(){snowCanvas.width=innerWidth;snowCanvas.height=innerHeight;}
+window.addEventListener('resize',resizeSnow);resizeSnow();
+const snowflakes=Array.from({length:80},()=>({
+  x:Math.random()*innerWidth,
+  y:Math.random()*innerHeight,
+  r:Math.random()*3+2,
+  s:Math.random()*1+0.5
+}));
+function snow(){
+  sctx.clearRect(0,0,snowCanvas.width,snowCanvas.height);
+  sctx.fillStyle='white';
+  snowflakes.forEach(f=>{
+    sctx.beginPath();
+    sctx.arc(f.x,f.y,f.r,0,Math.PI*2);
+    sctx.fill();
+    f.y+=f.s;
+    if(f.y>innerHeight){f.y=-5;f.x=Math.random()*innerWidth;}
+  });
+  requestAnimationFrame(snow);
+}
+snow();
 
-// ✨ Destellos dorados
-const c=document.getElementById('sparkles');
-const ctx=c.getContext('2d');
-function resize(){c.width=innerWidth;c.height=innerHeight;}
+// ✨ Destellos grandes tipo sparkles
+const sparkles=document.getElementById('sparkles');
+const ctx=sparkles.getContext('2d');
+function resize(){sparkles.width=innerWidth;sparkles.height=innerHeight;}
 window.addEventListener('resize',resize);resize();
-const stars=Array.from({length:60},()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5,a:Math.random()}));
-function animate(){
-  ctx.clearRect(0,0,c.width,c.height);
+const stars=Array.from({length:25},()=>({
+  x:Math.random()*innerWidth,
+  y:Math.random()*innerHeight,
+  size:10+Math.random()*20,
+  opacity:Math.random()
+}));
+function sparkle(){
+  ctx.clearRect(0,0,sparkles.width,sparkles.height);
   stars.forEach(s=>{
-    s.a+=0.02;
-    const glow=(Math.sin(s.a)*0.5+0.5)*0.8;
+    s.opacity+=0.03;
+    const glow=(Math.sin(s.opacity)*0.5+0.5);
+    const gradient=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.size);
+    gradient.addColorStop(0,`rgba(255,215,0,${glow})`);
+    gradient.addColorStop(1,'rgba(255,215,0,0)');
+    ctx.fillStyle=gradient;
     ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(255,215,0,${glow})`;
+    ctx.arc(s.x,s.y,s.size,0,Math.PI*2);
     ctx.fill();
   });
-  requestAnimationFrame(animate);
+  requestAnimationFrame(sparkle);
 }
-animate();
+sparkle();
 </script>
 </body>
 </html>
