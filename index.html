@@ -4,187 +4,165 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ardene – 12 Days of Christmas</title>
-
-<!-- 🔧 FAVICON (usa tu logo actual, puedes reemplazar el link si tienes otro formato) -->
 <link rel="icon" href="https://imgur.com/tNTHyxs.png" type="image/png">
-
-<!-- Fuente -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-  :root {
-    --pink-light: #ffe5ef;
-    --pink: #ffb6c1;
-    --pink-dark: #ff8ca4;
-    --gold: #ffd700;
-  }
+:root {
+  --pink-light: #ffe5ef;
+  --pink-dark: #ff8ca4;
+  --gold: #ffd700;
+}
 
-  body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    color: #111;
-    background: radial-gradient(circle at top, var(--pink-light), #fff);
-    overflow-x: hidden;
-  }
+/* === Fondo iridiscente animado === */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(145deg, #ffd6f9 0%, #fff2e2 50%, #fbe0f0 100%);
+  background-size: 200% 200%;
+  animation: shimmer 6s ease-in-out infinite;
+  overflow-x: hidden;
+  position: relative;
+}
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
-  /* ✨ Fondo de nieve + destellos dorados */
-  canvas#sparkles, .snow {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: 0;
-  }
+canvas#glitterCanvas, canvas#snowCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
 
-  header {
-    text-align: center;
-    padding: 1.5rem 1rem;
-    background: rgba(255,255,255,0.9);
-    border-bottom: 2px solid var(--pink);
-    position: relative;
-    z-index: 2;
-  }
+/* === Header === */
+header {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  background: rgba(255,255,255,0.85);
+  border-bottom: 2px solid var(--pink-dark);
+  position: relative;
+  z-index: 2;
+}
+header img { width: 270px; height: auto; }
+h1 { margin:.4rem 0; font-weight:700; font-size:1.8rem; color:#111; }
+p.subtitle { margin:0; color:#333; font-size:1rem; }
+p.counter { margin-top:.5rem; color:var(--pink-dark); font-weight:600; }
 
-  header img {
-    width: 180px;
-    height: auto;
-  }
+.welcome {
+  position: fixed;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  color: #111;
+  padding: 25px 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  z-index: 999;
+  font-weight: 600;
+  font-size: 1.1rem;
+  opacity: 0;
+  animation: fadeInOut 2.8s ease forwards;
+}
+@keyframes fadeInOut {
+  0%{opacity:0;} 10%{opacity:1;} 80%{opacity:1;} 100%{opacity:0;}
+}
 
-  h1 {
-    margin: .4rem 0;
-    font-weight: 700;
-    font-size: 1.7rem;
-    color: #111;
-  }
+/* === Calendario 3x4 === */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  padding: 2rem;
+  max-width: 800px;
+  margin: 2rem auto;
+  position: relative;
+  z-index: 1;
+}
+.day {
+  background: #fff;
+  border: 3px solid var(--pink-dark);
+  border-radius: 18px;
+  padding: 2rem 0;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #111;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.day:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
 
-  p.subtitle {
-    margin: 0;
-    color: #333;
-    font-size: 1rem;
-  }
+.btn-points {
+  display: block;
+  margin: 20px auto;
+  background: var(--pink-dark);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-points:hover { background: var(--gold); color: #111; }
 
-  p.counter {
-    margin-top: .5rem;
-    color: var(--pink-dark);
-    font-weight: 600;
-  }
+footer {
+  text-align: center;
+  font-size: .9rem;
+  padding: 30px 10px;
+  color: #555;
+}
 
-  .welcome {
-    position: fixed;
-    top: 35%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    color: #111;
-    padding: 25px 40px;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    z-index: 999;
-    font-weight: 600;
-    font-size: 1.1rem;
-    opacity: 0;
-    animation: fadeInOut 2.8s ease forwards;
-  }
+/* === Modal === */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+.modal {
+  background: #fff;
+  border: 3px solid var(--pink-dark);
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 600px;
+  text-align: left;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+.modal h2 { margin-top: 0; color: #111; }
+.modal .promo { color: var(--pink-dark); font-weight: 600; }
+.modal .close {
+  background: var(--pink-dark);
+  border: none; color: white;
+  padding: 8px 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  float: right;
+  cursor: pointer;
+}
+.modal .close:hover { background: var(--gold); color: #111; }
 
-  @keyframes fadeInOut {
-    0% {opacity:0;}
-    10% {opacity:1;}
-    80% {opacity:1;}
-    100% {opacity:0;}
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1rem;
-    padding: 2rem;
-    max-width: 700px;
-    margin: auto;
-    position: relative;
-    z-index: 1;
-  }
-
-  .day {
-    background: #fff;
-    border: 3px solid var(--pink);
-    border-radius: 18px;
-    padding: 2rem 0;
-    text-align: center;
-    font-weight: 700;
-    font-size: 1.5rem;
-    color: #111;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
-    cursor: pointer;
-    transition: all 0.25s;
-  }
-
-  .day:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
-  .day.locked { background: #f5f5f5; color: #aaa; border-color: #ddd; cursor: not-allowed; }
-
-  .btn-points {
-    display: block;
-    margin: 20px auto;
-    background: var(--pink-dark);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    font-weight: 700;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background .3s;
-  }
-  .btn-points:hover { background: var(--pink); }
-
-  footer {
-    text-align: center;
-    font-size: .9rem;
-    padding: 30px 10px;
-    color: #555;
-  }
-
-  /* Modal */
-  .modal-backdrop {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.4);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-  }
-  .modal {
-    background: #fff;
-    border: 3px solid var(--pink);
-    border-radius: 16px;
-    padding: 20px;
-    max-width: 600px;
-    text-align: left;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-  }
-  .modal h2 { margin-top: 0; color: #111; }
-  .modal .promo { color: var(--pink-dark); font-weight: 600; }
-  .modal .close {
-    background: var(--pink-dark);
-    border: none; color: white;
-    padding: 8px 16px;
-    font-weight: 600;
-    border-radius: 8px;
-    float: right;
-    cursor: pointer;
-  }
-  .modal .close:hover { background: var(--pink); }
+/* Responsive */
+@media (max-width: 768px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
-<!-- ✨ DESTELLOS Y NIEVE -->
-<canvas id="sparkles"></canvas>
-<div class="snow" id="snow"></div>
+<canvas id="glitterCanvas"></canvas>
+<canvas id="snowCanvas"></canvas>
 
-<!-- 💬 Mensaje de bienvenida -->
 <div class="welcome">🎄 ¡Bienvenida al reto <b>12 Days of Christmas</b>, Ardene Girl! 💖</div>
 
 <header>
-  <!-- 🔧 Cambia el logo aquí -->
   <img src="https://imgur.com/tNTHyxs.png" alt="Ardene Logo">
   <h1>12 Days of Christmas</h1>
   <p class="subtitle">12 días, 12 retos, 12 oportunidades de brillar ✨</p>
@@ -198,7 +176,6 @@
 
 <footer>© Ardene | Hecho con 💖 para nuestros equipos de tienda</footer>
 
-<!-- Modal general -->
 <div class="modal-backdrop" id="modalBg">
   <div class="modal">
     <button class="close" id="closeModal">Cerrar</button>
@@ -208,79 +185,67 @@
   </div>
 </div>
 
-<!-- Modal reglas -->
 <div class="modal-backdrop" id="rulesBg">
   <div class="modal">
     <button class="close" id="closeRules">Cerrar</button>
     <h2>🎯 Cómo ganar puntos</h2>
-    <p><b>Sistema de puntos:</b></p>
     <ul>
-      <li>+1 por participar en el reto del día</li>
-      <li>+1 extra si superas la meta</li>
-      <li>+3 si eres la ganadora del día</li>
-      <li>+3 para la mayor UPT del día 12 🎄</li>
-      <li>+5 por participar los 12 días 💪</li>
+      <li>+1 punto por participar en el reto diario.</li>
+      <li>+3 puntos si eres la ganadora del día.</li>
+      <li>+3 puntos extra por la mayor UPT en el Día 12 🎄</li>
+      <li>+5 puntos si completas los 12 días 💪</li>
     </ul>
-    <p><b>Premios finales:</b></p>
+    <p><b>Premios finales 🎁:</b></p>
     <ul>
-      <li>🏆 <b>Holiday Star:</b> Gift Card + título oficial ✨</li>
-      <li>🥈 <b>2º lugar:</b> Pin exclusivo + Gift Card menor 💖</li>
-      <li>🥉 <b>3º lugar:</b> Kit Ardene sorpresa 🎁</li>
-      <li>⭐ <b>Tienda campeona:</b> desayuno especial + reconocimiento 🌸</li>
+      <li>🏆 Holiday Star: Gift Card + título oficial ✨</li>
+      <li>🥈 Segundo lugar: Pin exclusivo + Gift Card menor 💖</li>
+      <li>🥉 Tercer lugar: Kit Ardene sorpresa 🎁</li>
     </ul>
   </div>
 </div>
 
 <script>
-// 💫 Contador para Navidad
-const counterEl = document.getElementById('counter');
+// === Contador ===
+const counterEl=document.getElementById('counter');
 function updateCountdown(){
-  const today = new Date();
-  const xmas = new Date(today.getFullYear(), 11, 25);
-  const diff = Math.ceil((xmas - today)/(1000*60*60*24));
-  counterEl.textContent = `Faltan ${diff} días para Navidad 🎄`;
+  const today=new Date();
+  const xmas=new Date(today.getFullYear(),11,25);
+  const diff=Math.ceil((xmas-today)/(1000*60*60*24));
+  counterEl.textContent=`Faltan ${diff} días para Navidad 🎄`;
 }
 updateCountdown();
 
-// 🎁 Días de retos
-const retos = [
-  ["Lingerie Love 💕","30% OFF Lingerie","Gana la asociada que venda más unidades de Lingerie hoy."],
-  ["Shine Bright ✨","3x2 Jewelry","Gana la asociada que venda más unidades de Jewelry."],
-  ["Bag Lovers 🎒","20% OFF Bags & Wallets","La primera en lograr 5 transacciones que incluyan Bags/Wallets."],
-  ["Step Into Style 👟","BOGO 50% Footwear","1 punto por cada ticket con promo de calzado (mínimo 2 pares)."],
-  ["Accessories Galore 🎀","3x2 Accesorios","Supera tu UPT personal vs. promedio de la semana pasada."],
-  ["Surprise Bag Day 🎉","Bag gratis desde $40","Logra 3 tickets ≥ $40 informando la Surprise Bag."],
-  ["Basics & Move 🩳","20% OFF Basics & Move","Vende mínimo 5 unidades (Basics/Move)."],
-  ["Denim Day 👖","Jeans a $29.99","La asociada que venda más jeans hoy se lleva el bonus."],
-  ["Mix & Match 📸","Cliente con 2+ productos","Logra 5 tickets con mínimo 2 productos distintos."],
-  ["Dress to Impress 👗","30% OFF Vestidos","Logra 3 facturas que incluyan al menos 1 vestido."],
-  ["PJ Party 🌙","30% OFF Pijamas","Vende 3 sets de pijamas (top + pant o nightshirt)."],
-  ["Big Finale 🎄","25% OFF Storewide","Supera tu UPT promedio semanal. Bonus: mayor UPT del día +3."]
+// === Retos ===
+const retos=[
+["Lingerie Love 💕","30% OFF Lingerie","Gana la asociada que venda más unidades de Lingerie hoy."],
+["Shine Bright ✨","3x2 Jewelry","Gana la asociada que venda más unidades de Jewelry."],
+["Bag Lovers 🎒","20% OFF Bags & Wallets","La primera en lograr 5 transacciones con Bags/Wallets."],
+["Step Into Style 👟","BOGO 50% Footwear","1 punto por cada ticket con calzado promo."],
+["Accessories Galore 🎀","3x2 Accesorios","Supera tu UPT personal vs. semana pasada."],
+["Surprise Bag Day 🎉","Bag gratis desde $40","Logra 3 tickets ≥ $40 con Surprise Bag."],
+["Basics & Move 🩳","20% OFF Basics & Move","Vende 5 unidades de Basics/Move."],
+["Denim Day 👖","Jeans a $29.99","La asociada que venda más jeans hoy gana."],
+["Mix & Match 📸","15% OFF redes","Cliente que muestre que nos sigue gana 15%."],
+["Dress to Impress 👗","30% OFF Vestidos","3 tickets que incluyan vestidos."],
+["PJ Party 🌙","30% OFF Pijamas","Vende 3 sets de pijamas."],
+["Big Finale 🎄","25% OFF Storewide","Supera tu UPT semanal. Bonus +3 puntos."]
 ];
 
-// 🔓 Desbloqueo por fecha
-const params = new URLSearchParams(window.location.search);
-let sim = params.get("sim") ? new Date(params.get("sim")) : new Date();
-let unlocked = (sim.getMonth()===11)?Math.min(sim.getDate(),12):0;
-
-// Render del calendario
-const cal = document.getElementById('calendar');
+const cal=document.getElementById('calendar');
 for(let i=1;i<=12;i++){
-  const d=document.createElement('div');
-  d.className='day';
-  d.textContent=i;
-  if(i>unlocked) d.classList.add('locked');
-  d.onclick=()=>{ if(i<=unlocked) openModal(i); };
-  cal.appendChild(d);
+  const box=document.createElement('div');
+  box.className='day';
+  box.textContent=i;
+  box.onclick=()=>openModal(i);
+  cal.appendChild(box);
 }
 
-// Modal funcional
 const modalBg=document.getElementById('modalBg');
-const closeModal=document.getElementById('closeModal');
 const mTitle=document.getElementById('mTitle');
 const mPromo=document.getElementById('mPromo');
 const mDesc=document.getElementById('mDesc');
-
+document.getElementById('closeModal').onclick=()=>modalBg.style.display='none';
+modalBg.onclick=e=>{if(e.target===modalBg) modalBg.style.display='none';};
 function openModal(i){
   const r=retos[i-1];
   mTitle.textContent=`Día ${i} — ${r[0]}`;
@@ -288,64 +253,62 @@ function openModal(i){
   mDesc.textContent=r[2];
   modalBg.style.display='flex';
 }
-closeModal.onclick=()=>modalBg.style.display='none';
-modalBg.onclick=e=>{if(e.target===modalBg) modalBg.style.display='none';};
 
-// Reglas modal
 const rulesBg=document.getElementById('rulesBg');
-const closeRules=document.getElementById('closeRules');
 document.getElementById('rulesBtn').onclick=()=>rulesBg.style.display='flex';
-closeRules.onclick=()=>rulesBg.style.display='none';
+document.getElementById('closeRules').onclick=()=>rulesBg.style.display='none';
 rulesBg.onclick=e=>{if(e.target===rulesBg) rulesBg.style.display='none';};
 
-// ❄️ Nieve
-(function snow(){
-  const s=document.getElementById('snow');
-  for(let i=0;i<60;i++){
-    const f=document.createElement('div');
-    f.className='flake';
-    const size=4+Math.random()*6;
-    Object.assign(f.style,{
-      position:'absolute',
-      top:-10+'px',
-      left:Math.random()*100+'vw',
-      width:size+'px',
-      height:size+'px',
-      background:'#fff',
-      borderRadius:'50%',
-      opacity:0.8,
-      animation:`fall ${8+Math.random()*8}s linear infinite`,
-      animationDelay:Math.random()*5+'s'
-    });
-    s.appendChild(f);
-  }
-})();
-
-// ✨ Destellos dorados
-const canvas=document.getElementById('sparkles');
-const ctx=canvas.getContext('2d');
-function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}
-window.addEventListener('resize',resize);
-resize();
-const stars=Array.from({length:50},()=>({
-  x:Math.random()*canvas.width,
-  y:Math.random()*canvas.height,
-  r:Math.random()*1.5,
-  a:Math.random()
+// === Glitter ===
+const glitterCanvas=document.getElementById('glitterCanvas');
+const gctx=glitterCanvas.getContext('2d');
+function resizeGlitter(){glitterCanvas.width=innerWidth;glitterCanvas.height=innerHeight;}
+window.addEventListener('resize',resizeGlitter);resizeGlitter();
+const glitterParticles=Array.from({length:120},()=>({
+  x:Math.random()*innerWidth,
+  y:Math.random()*innerHeight,
+  r:Math.random()*2+0.5,
+  s:Math.random()*0.5+0.3,
+  color:["#fff7e6","#ffe8c2","#ffd6f9","#fff"][Math.floor(Math.random()*4)]
 }));
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  stars.forEach(s=>{
-    s.a+=0.02;
-    const glow=(Math.sin(s.a)*0.5+0.5)*0.8;
-    ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(255,215,0,${glow})`;
-    ctx.fill();
+function drawGlitter(){
+  gctx.clearRect(0,0,glitterCanvas.width,glitterCanvas.height);
+  glitterParticles.forEach(p=>{
+    gctx.beginPath();
+    gctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    gctx.fillStyle=p.color;
+    gctx.fill();
+    p.y+=p.s;
+    if(p.y>innerHeight){p.y=-5;p.x=Math.random()*innerWidth;}
   });
-  requestAnimationFrame(animate);
+  requestAnimationFrame(drawGlitter);
 }
-animate();
+drawGlitter();
+
+// === Snow ===
+const snowCanvas=document.getElementById('snowCanvas');
+const sctx=snowCanvas.getContext('2d');
+function resizeSnow(){snowCanvas.width=innerWidth;snowCanvas.height=innerHeight;}
+window.addEventListener('resize',resizeSnow);resizeSnow();
+const snowflakes=Array.from({length:70},()=>({
+  x:Math.random()*innerWidth,
+  y:Math.random()*innerHeight,
+  r:Math.random()*3+1,
+  s:Math.random()*0.8+0.3
+}));
+function drawSnow(){
+  sctx.clearRect(0,0,snowCanvas.width,snowCanvas.height);
+  sctx.fillStyle='rgba(255,255,255,0.8)';
+  snowflakes.forEach(f=>{
+    sctx.beginPath();
+    sctx.arc(f.x,f.y,f.r,0,Math.PI*2);
+    sctx.fill();
+    f.y+=f.s;
+    if(f.y>innerHeight){f.y=-5;f.x=Math.random()*innerWidth;}
+  });
+  requestAnimationFrame(drawSnow);
+}
+drawSnow();
 </script>
 </body>
 </html>
