@@ -21,16 +21,16 @@ body {
   position: relative;
 }
 
-/* Fondo y efectos */
-#sparkles, #snowCanvas {
+/* === Fondos === */
+canvas#sparkles, canvas#snowCanvas {
   position: fixed;
   top: 0; left: 0;
-  width: 100vw; height: 100vh;
+  width: 100%; height: 100%;
   pointer-events: none;
   z-index: 0;
 }
 
-/* Header */
+/* === Header === */
 header {
   text-align: center;
   padding: 1.5rem 1rem;
@@ -39,25 +39,15 @@ header {
   position: relative;
   z-index: 2;
 }
-
-header img {
-  width: 270px; /* Aumentado 50% */
-  height: auto;
-}
-
-h1 {
-  margin: .4rem 0;
-  font-weight: 700;
-  font-size: 1.8rem;
-  color: #111;
-}
-
-p.subtitle { margin: 0; color: #333; font-size: 1rem; }
-p.counter { margin-top: .5rem; color: var(--pink-dark); font-weight: 600; }
+header img { width: 270px; height: auto; }
+h1 { margin:.4rem 0; font-weight:700; font-size:1.8rem; color:#111; }
+p.subtitle { margin:0; color:#333; font-size:1rem; }
+p.counter { margin-top:.5rem; color:var(--pink-dark); font-weight:600; }
 
 .welcome {
   position: fixed;
-  top: 35%; left: 50%;
+  top: 35%;
+  left: 50%;
   transform: translate(-50%, -50%);
   background: white;
   color: #111;
@@ -71,24 +61,20 @@ p.counter { margin-top: .5rem; color: var(--pink-dark); font-weight: 600; }
   animation: fadeInOut 2.8s ease forwards;
 }
 @keyframes fadeInOut {
-  0%{opacity:0;}
-  10%{opacity:1;}
-  80%{opacity:1;}
-  100%{opacity:0;}
+  0%{opacity:0;} 10%{opacity:1;} 80%{opacity:1;} 100%{opacity:0;}
 }
 
-/* Calendario */
+/* === Calendario === */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
   padding: 2rem;
-  max-width: 700px;
-  margin: auto;
+  max-width: 800px;
+  margin: 2rem auto;
   position: relative;
   z-index: 1;
 }
-
 .day {
   background: #fff;
   border: 3px solid var(--pink-dark);
@@ -102,10 +88,10 @@ p.counter { margin-top: .5rem; color: var(--pink-dark); font-weight: 600; }
   cursor: pointer;
   transition: all 0.25s;
 }
-.day:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
-.day.locked { background: #f5f5f5; color: #aaa; border-color: #ddd; cursor: not-allowed; }
-
-/* Botón */
+.day:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+}
 .btn-points {
   display: block;
   margin: 20px auto;
@@ -127,7 +113,7 @@ footer {
   color: #555;
 }
 
-/* Modal */
+/* === Modal === */
 .modal-backdrop {
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.4);
@@ -157,6 +143,10 @@ footer {
   cursor: pointer;
 }
 .modal .close:hover { background: var(--gold); color: #111; }
+
+/* Responsive */
+@media (max-width: 768px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -209,7 +199,7 @@ footer {
 </div>
 
 <script>
-// Contador
+// === Contador ===
 const counterEl=document.getElementById('counter');
 function updateCountdown(){
   const today=new Date();
@@ -219,7 +209,7 @@ function updateCountdown(){
 }
 updateCountdown();
 
-// Retos
+// === Retos ===
 const retos=[
 ["Lingerie Love 💕","30% OFF Lingerie","Gana la asociada que venda más unidades de Lingerie hoy."],
 ["Shine Bright ✨","3x2 Jewelry","Gana la asociada que venda más unidades de Jewelry."],
@@ -257,23 +247,24 @@ function openModal(i){
   mDesc.textContent=r[2];
   modalBg.style.display='flex';
 }
+
 const rulesBg=document.getElementById('rulesBg');
 document.getElementById('rulesBtn').onclick=()=>rulesBg.style.display='flex';
 document.getElementById('closeRules').onclick=()=>rulesBg.style.display='none';
 rulesBg.onclick=e=>{if(e.target===rulesBg) rulesBg.style.display='none';};
 
-// ❄️ Nieve con partículas
+// === Nieve real ===
 const snowCanvas=document.getElementById('snowCanvas');
 const sctx=snowCanvas.getContext('2d');
 function resizeSnow(){snowCanvas.width=innerWidth;snowCanvas.height=innerHeight;}
 window.addEventListener('resize',resizeSnow);resizeSnow();
-const snowflakes=Array.from({length:80},()=>({
+const snowflakes=Array.from({length:100},()=>({
   x:Math.random()*innerWidth,
   y:Math.random()*innerHeight,
-  r:Math.random()*3+2,
-  s:Math.random()*1+0.5
+  r:Math.random()*4+2,
+  s:Math.random()*1.2+0.4
 }));
-function snow(){
+function drawSnow(){
   sctx.clearRect(0,0,snowCanvas.width,snowCanvas.height);
   sctx.fillStyle='white';
   snowflakes.forEach(f=>{
@@ -283,30 +274,31 @@ function snow(){
     f.y+=f.s;
     if(f.y>innerHeight){f.y=-5;f.x=Math.random()*innerWidth;}
   });
-  requestAnimationFrame(snow);
+  requestAnimationFrame(drawSnow);
 }
-snow();
+drawSnow();
 
-// ✨ Destellos grandes tipo sparkles
+// === Destellos dorados grandes ===
 const sparkles=document.getElementById('sparkles');
 const ctx=sparkles.getContext('2d');
-function resize(){sparkles.width=innerWidth;sparkles.height=innerHeight;}
-window.addEventListener('resize',resize);resize();
-const stars=Array.from({length:25},()=>({
+function resizeSpark(){sparkles.width=innerWidth;sparkles.height=innerHeight;}
+window.addEventListener('resize',resizeSpark);resizeSpark();
+const stars=Array.from({length:20},()=>({
   x:Math.random()*innerWidth,
   y:Math.random()*innerHeight,
-  size:10+Math.random()*20,
-  opacity:Math.random()
+  size:50+Math.random()*80,
+  opacity:Math.random()*Math.PI
 }));
 function sparkle(){
   ctx.clearRect(0,0,sparkles.width,sparkles.height);
   stars.forEach(s=>{
     s.opacity+=0.03;
     const glow=(Math.sin(s.opacity)*0.5+0.5);
-    const gradient=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.size);
-    gradient.addColorStop(0,`rgba(255,215,0,${glow})`);
-    gradient.addColorStop(1,'rgba(255,215,0,0)');
-    ctx.fillStyle=gradient;
+    const grad=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.size);
+    grad.addColorStop(0,`rgba(255,215,0,${glow})`);
+    grad.addColorStop(0.2,`rgba(255,230,120,${glow*0.9})`);
+    grad.addColorStop(1,'rgba(255,215,0,0)');
+    ctx.fillStyle=grad;
     ctx.beginPath();
     ctx.arc(s.x,s.y,s.size,0,Math.PI*2);
     ctx.fill();
