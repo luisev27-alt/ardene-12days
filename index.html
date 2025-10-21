@@ -1,368 +1,351 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ardene – 12 Days of Christmas</title>
+
+<!-- 🔧 FAVICON (usa tu logo actual, puedes reemplazar el link si tienes otro formato) -->
+<link rel="icon" href="https://imgur.com/tNTHyxs.png" type="image/png">
+
+<!-- Fuente -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
-  :root{
-    --pink:#ffb6c1;
-    --pink-dark:#ff9fb0;
-    --bg:#fff;
-    --ink:#111;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0;background:linear-gradient(#ffffff,#fff4f8);color:var(--ink);font-family:Poppins,system-ui;}
-  header{
-    position:sticky;top:0;background:#fff;padding:16px 12px;border-bottom:1px solid #eee;z-index:5;
-    display:flex;flex-direction:column;align-items:center;gap:8px
-  }
-  header .brand{display:flex;align-items:center;gap:12px}
-  header img{height:36px; width:auto; object-fit:contain}
-  header h1{font-size:1.25rem;margin:0;font-weight:700;letter-spacing:.3px}
-  header p{margin:0;color:#444;font-size:.9rem}
-
-  .wrap{max-width:980px;margin:24px auto;padding:0 16px}
-
-  .grid{
-    display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
-  }
-  @media (max-width:780px){ .grid{grid-template-columns:repeat(3,1fr);} }
-  @media (max-width:520px){ .grid{grid-template-columns:repeat(2,1fr);} }
-
-  .day{
-    position:relative; background:#fff; border:3px solid var(--pink);
-    border-radius:18px; padding:28px 8px; text-align:center; font-weight:700; font-size:1.8rem;
-    cursor:pointer; user-select:none;
-    box-shadow:0 6px 12px rgba(0,0,0,.08); transition:.2s transform, .2s box-shadow, .2s border-color;
-  }
-  .day:hover{ transform:translateY(-4px); box-shadow:0 10px 18px rgba(0,0,0,.12); border-color:var(--pink-dark);}
-  .day .label{display:block;font-size:.85rem;margin-top:8px;color:#444;font-weight:600}
-  .day.locked{ background:#f6f6f6; color:#aaa; border-color:#ddd; cursor:not-allowed;}
-  .day.locked:hover{ transform:none; box-shadow:0 6px 12px rgba(0,0,0,.06); border-color:#ddd;}
-  .day.locked::after{
-    content:"🔒"; position:absolute; top:10px; right:12px; font-size:1.1rem; opacity:.9;
+  :root {
+    --pink-light: #ffe5ef;
+    --pink: #ffb6c1;
+    --pink-dark: #ff8ca4;
+    --gold: #ffd700;
   }
 
-  /* Tooltip para bloqueados */
-  .day.locked .tooltip{
-    position:absolute; left:50%; bottom:10px; transform:translateX(-50%);
-    background:#222; color:#fff; padding:4px 8px; border-radius:8px; font-size:.75rem; opacity:0; pointer-events:none; transition:.2s;
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    color: #111;
+    background: radial-gradient(circle at top, var(--pink-light), #fff);
+    overflow-x: hidden;
   }
-  .day.locked:hover .tooltip{ opacity:1; }
+
+  /* ✨ Fondo de nieve + destellos dorados */
+  canvas#sparkles, .snow {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  header {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    background: rgba(255,255,255,0.9);
+    border-bottom: 2px solid var(--pink);
+    position: relative;
+    z-index: 2;
+  }
+
+  header img {
+    width: 180px;
+    height: auto;
+  }
+
+  h1 {
+    margin: .4rem 0;
+    font-weight: 700;
+    font-size: 1.7rem;
+    color: #111;
+  }
+
+  p.subtitle {
+    margin: 0;
+    color: #333;
+    font-size: 1rem;
+  }
+
+  p.counter {
+    margin-top: .5rem;
+    color: var(--pink-dark);
+    font-weight: 600;
+  }
+
+  .welcome {
+    position: fixed;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    color: #111;
+    padding: 25px 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 999;
+    font-weight: 600;
+    font-size: 1.1rem;
+    opacity: 0;
+    animation: fadeInOut 2.8s ease forwards;
+  }
+
+  @keyframes fadeInOut {
+    0% {opacity:0;}
+    10% {opacity:1;}
+    80% {opacity:1;}
+    100% {opacity:0;}
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    padding: 2rem;
+    max-width: 700px;
+    margin: auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .day {
+    background: #fff;
+    border: 3px solid var(--pink);
+    border-radius: 18px;
+    padding: 2rem 0;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #111;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .day:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+  .day.locked { background: #f5f5f5; color: #aaa; border-color: #ddd; cursor: not-allowed; }
+
+  .btn-points {
+    display: block;
+    margin: 20px auto;
+    background: var(--pink-dark);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background .3s;
+  }
+  .btn-points:hover { background: var(--pink); }
+
+  footer {
+    text-align: center;
+    font-size: .9rem;
+    padding: 30px 10px;
+    color: #555;
+  }
 
   /* Modal */
-  .modal-backdrop{
-    position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; align-items:center; justify-content:center; z-index:20; padding:16px;
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
   }
-  .modal{
-    width:min(720px,100%); background:#fff; border-radius:16px; border:3px solid var(--pink);
-    box-shadow:0 20px 40px rgba(0,0,0,.25); padding:18px 18px 14px;
-    transform:translateY(8px) scale(.98); opacity:0; transition:.18s;
+  .modal {
+    background: #fff;
+    border: 3px solid var(--pink);
+    border-radius: 16px;
+    padding: 20px;
+    max-width: 600px;
+    text-align: left;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
   }
-  .modal.open{ transform:none; opacity:1; }
-  .modal header{
-    position:relative; top:unset; background:transparent; border:none; padding:0; gap:6px; margin-bottom:6px;
+  .modal h2 { margin-top: 0; color: #111; }
+  .modal .promo { color: var(--pink-dark); font-weight: 600; }
+  .modal .close {
+    background: var(--pink-dark);
+    border: none; color: white;
+    padding: 8px 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    float: right;
+    cursor: pointer;
   }
-  .modal h2{margin:0;font-size:1.25rem}
-  .meta{display:flex; flex-wrap:wrap; gap:8px; font-size:.9rem; color:#555}
-  .meta .chip{background:#ffe9ef; border:1px solid var(--pink-dark); color:#111; border-radius:999px; padding:4px 10px; font-weight:600}
-  .content{padding:8px 2px 6px; line-height:1.5; color:#333; font-size:1rem}
-  .how{margin-top:8px; padding:10px; background:#fff7fa; border:1px dashed var(--pink-dark); border-radius:12px; font-size:.95rem}
-  .actions{display:flex; justify-content:flex-end; gap:8px; margin-top:14px}
-  button{
-    appearance:none; border:none; border-radius:12px; padding:10px 14px; font-weight:700; cursor:pointer;
-  }
-  .btn-primary{background:var(--pink); }
-  .btn-primary:hover{ background:var(--pink-dark); }
-  .btn-outline{background:#fff; border:2px solid #222;}
-  .btn-outline:hover{ background:#f8f8f8;}
-
-  /* Nieve (simple, liviana) */
-  .snow{
-    position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
-  }
-  .flake{
-    position:absolute; top:-10px; width:8px; height:8px; background:#fff; border-radius:50%;
-    box-shadow:0 0 8px rgba(255,255,255,.8);
-    animation:fall linear infinite, sway ease-in-out infinite;
-  }
-  @keyframes fall{
-    to{ transform:translateY(110vh); }
-  }
-  @keyframes sway{
-    0%{ margin-left:0; } 50%{ margin-left:12px; } 100%{ margin-left:0; }
-  }
-
-  footer{ text-align:center; color:#666; font-size:.85rem; padding:24px 10px;}
-  .note{font-size:.8rem;color:#777;margin-top:8px}
+  .modal .close:hover { background: var(--pink); }
 </style>
 </head>
 <body>
 
-<!-- Nieve -->
+<!-- ✨ DESTELLOS Y NIEVE -->
+<canvas id="sparkles"></canvas>
 <div class="snow" id="snow"></div>
 
+<!-- 💬 Mensaje de bienvenida -->
+<div class="welcome">🎄 ¡Bienvenida al reto <b>12 Days of Christmas</b>, Ardene Girl! 💖</div>
+
 <header>
-  <div class="brand">
-    <!-- CAMBIA ESTE SRC POR EL LOGO DE ARDENE SI TIENES URL PROPIA -->
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Ardene_logo.svg/320px-Ardene_logo.svg.png" alt="Ardene" />
-    <h1>12 Days of Christmas – Desafío para Asociadas</h1>
-  </div>
-  <p>Una caja por día (1–12 de diciembre). Abre la del día y cumple el reto. ¡Hay premios! ✨</p>
-  <p class="note" id="simNote" style="display:none"></p>
+  <!-- 🔧 Cambia el logo aquí -->
+  <img src="https://imgur.com/tNTHyxs.png" alt="Ardene Logo">
+  <h1>12 Days of Christmas</h1>
+  <p class="subtitle">12 días, 12 retos, 12 oportunidades de brillar ✨</p>
+  <p class="counter" id="counter"></p>
 </header>
 
-<div class="wrap">
-  <div class="grid" id="grid">
-    <!-- Se llena por JS -->
+<main>
+  <div class="grid" id="calendar"></div>
+  <button class="btn-points" id="rulesBtn">🎯 Cómo ganar puntos</button>
+</main>
+
+<footer>© Ardene | Hecho con 💖 para nuestros equipos de tienda</footer>
+
+<!-- Modal general -->
+<div class="modal-backdrop" id="modalBg">
+  <div class="modal">
+    <button class="close" id="closeModal">Cerrar</button>
+    <h2 id="mTitle"></h2>
+    <p class="promo" id="mPromo"></p>
+    <p id="mDesc"></p>
   </div>
 </div>
 
-<!-- Modal -->
-<div class="modal-backdrop" id="backdrop" role="dialog" aria-modal="true" aria-hidden="true">
-  <div class="modal" id="modal">
-    <header>
-      <h2 id="m_title">Día X — Título</h2>
-      <div class="meta">
-        <span class="chip" id="m_promo">Promo</span>
-        <span class="chip" id="m_points">Puntos</span>
-      </div>
-    </header>
-    <div class="content" id="m_desc"></div>
-    <div class="how" id="m_how"></div>
-    <div class="actions">
-      <button class="btn-outline" id="copyBtn">Copiar reto</button>
-      <button class="btn-primary" id="closeBtn">Cerrar</button>
-    </div>
+<!-- Modal reglas -->
+<div class="modal-backdrop" id="rulesBg">
+  <div class="modal">
+    <button class="close" id="closeRules">Cerrar</button>
+    <h2>🎯 Cómo ganar puntos</h2>
+    <p><b>Sistema de puntos:</b></p>
+    <ul>
+      <li>+1 por participar en el reto del día</li>
+      <li>+1 extra si superas la meta</li>
+      <li>+3 si eres la ganadora del día</li>
+      <li>+3 para la mayor UPT del día 12 🎄</li>
+      <li>+5 por participar los 12 días 💪</li>
+    </ul>
+    <p><b>Premios finales:</b></p>
+    <ul>
+      <li>🏆 <b>Holiday Star:</b> Gift Card + título oficial ✨</li>
+      <li>🥈 <b>2º lugar:</b> Pin exclusivo + Gift Card menor 💖</li>
+      <li>🥉 <b>3º lugar:</b> Kit Ardene sorpresa 🎁</li>
+      <li>⭐ <b>Tienda campeona:</b> desayuno especial + reconocimiento 🌸</li>
+    </ul>
   </div>
 </div>
-
-<footer>
-  © Ardene | Hecho con 💖 para nuestros equipos de tienda
-</footer>
 
 <script>
-/* ===========================
-   CONFIGURACIÓN
-=========================== */
-
-// Fecha real: se desbloquea 1 por día del 1 al 12 de DICIEMBRE.
-// Para PROBAR antes de diciembre, agrega ?sim=YYYY-MM-DD al link, ej: ?sim=2025-12-05
-const urlParams = new URLSearchParams(window.location.search);
-const simDateStr = urlParams.get('sim'); // ej "2025-12-05" para probar
-let today = simDateStr ? new Date(simDateStr+"T12:00:00") : new Date();
-
-// Mostrar nota de simulación si aplica
-if (simDateStr) {
-  const note = document.getElementById('simNote');
-  note.textContent = "Modo prueba: simulando fecha " + simDateStr;
-  note.style.display = 'block';
+// 💫 Contador para Navidad
+const counterEl = document.getElementById('counter');
+function updateCountdown(){
+  const today = new Date();
+  const xmas = new Date(today.getFullYear(), 11, 25);
+  const diff = Math.ceil((xmas - today)/(1000*60*60*24));
+  counterEl.textContent = `Faltan ${diff} días para Navidad 🎄`;
 }
+updateCountdown();
 
-// Mes objetivo (diciembre) y rango de días
-const TARGET_MONTH = 11; // 0=Ene ... 11=Dic
-const START_DAY = 1;
-const TOTAL_DAYS = 12;
-
-// Contenido día a día (ventas puras, según tus reglas)
-const DAYS = [
-  /* 1 */ {
-    title: "Lingerie Love 💕",
-    promo: "30% OFF Lingerie",
-    desc: "Gana la asociada que venda más unidades de Lingerie hoy.",
-    how: "Medición: POS o conteo validado por gerente. Premio: +3 pts a la ganadora, +1 por participar.",
-    points: "+1 participación / +3 ganadora"
-  },
-  /* 2 */ {
-    title: "Shine Bright ✨",
-    promo: "3x2 Jewelry",
-    desc: "Gana la asociada que venda más unidades de Jewelry.",
-    how: "Medición: POS o tally. Premio: +3 pts ganadora, +1 participar.",
-    points: "+1 participación / +3 ganadora"
-  },
-  /* 3 */ {
-    title: "Bag Lovers 🎒",
-    promo: "20% OFF Bags & Wallets",
-    desc: "La primera en lograr 5 transacciones que incluyan Bags/Wallets.",
-    how: "Medición: facturas validadas por gerente. Premio: +2 pts a la primera en lograrlo, +1 si lo logras más tarde.",
-    points: "+1 logro / +2 si eres la primera"
-  },
-  /* 4 */ {
-    title: "Step Into Style 👟",
-    promo: "BOGO 50% Footwear",
-    desc: "1 punto por cada ticket con promo de calzado (mín. 2 pares).",
-    how: "Medición: facturas o POS. Sin límite: ¡suma todo lo que puedas!",
-    points: "+1 por ticket válido"
-  },
-  /* 5 */ {
-    title: "Accessories Galore 🎀",
-    promo: "3x2 Accesorios",
-    desc: "Supera tu UPT personal vs. promedio de la semana pasada.",
-    how: "Medición: UPT diario vs. UPT promedio semanal. +2 si superas, +1 si igualas.",
-    points: "+1 iguala / +2 supera"
-  },
-  /* 6 */ {
-    title: "Surprise Bag Day 🎉",
-    promo: "Bag gratis desde $40",
-    desc: "Logra 3 tickets ≥ $40 informando la Surprise Bag.",
-    how: "Medición: facturas/POS + validación gerente. 1 punto por ticket válido.",
-    points: "+1 por ticket (hasta 3+)"
-  },
-  /* 7 */ {
-    title: "Basics & Move 🩳",
-    promo: "20% OFF Basics & Move",
-    desc: "Vende mínimo 5 unidades (Basics/Move).",
-    how: "Medición: POS por categoría o conteo. +2 si llegas a 5, +1 si llegas a 3.",
-    points: "+1 a 3u / +2 a 5u"
-  },
-  /* 8 */ {
-    title: "Denim Day 👖",
-    promo: "Jeans a $29.99",
-    desc: "La asociada que venda más jeans hoy se lleva el bonus.",
-    how: "Medición: POS. Premio: +3 pts ganadora, +1 por participar.",
-    points: "+1 participación / +3 ganadora"
-  },
-  /* 9 */ {
-    title: "Mix & Match 📸",
-    promo: "Cliente con 2+ productos",
-    desc: "Logra 5 tickets con mínimo 2 productos distintos (reemplaza el social).",
-    how: "Medición: facturas. +2 si llegas a 5 tickets, +1 si llegas a 3.",
-    points: "+1 a 3 tkts / +2 a 5 tkts"
-  },
-  /* 10 */ {
-    title: "Dress to Impress 👗",
-    promo: "30% OFF Vestidos",
-    desc: "Logra 3 facturas que incluyan al menos 1 vestido.",
-    how: "Medición: POS/facturas validadas. +1 punto; +1 adicional si superas 3.",
-    points: "+1 meta / +2 si superas"
-  },
-  /* 11 */ {
-    title: "PJ Party 🌙",
-    promo: "30% OFF Pijamas",
-    desc: "Vende 3 sets de pijamas (top + pant o nightshirt).",
-    how: "Medición: POS o conteo validado. +2 si logras 3, +1 si logras 2.",
-    points: "+1 a 2 sets / +2 a 3 sets"
-  },
-  /* 12 */ {
-    title: "Big Finale 🎄",
-    promo: "25% OFF Storewide",
-    desc: "Supera tu UPT promedio semanal. Bonus extra: la mayor UPT del día gana +3.",
-    how: "Medición: POS. +2 si superas tu UPT; +3 para la top del día.",
-    points: "+2 supera UPT / +3 top UPT"
-  },
+// 🎁 Días de retos
+const retos = [
+  ["Lingerie Love 💕","30% OFF Lingerie","Gana la asociada que venda más unidades de Lingerie hoy."],
+  ["Shine Bright ✨","3x2 Jewelry","Gana la asociada que venda más unidades de Jewelry."],
+  ["Bag Lovers 🎒","20% OFF Bags & Wallets","La primera en lograr 5 transacciones que incluyan Bags/Wallets."],
+  ["Step Into Style 👟","BOGO 50% Footwear","1 punto por cada ticket con promo de calzado (mínimo 2 pares)."],
+  ["Accessories Galore 🎀","3x2 Accesorios","Supera tu UPT personal vs. promedio de la semana pasada."],
+  ["Surprise Bag Day 🎉","Bag gratis desde $40","Logra 3 tickets ≥ $40 informando la Surprise Bag."],
+  ["Basics & Move 🩳","20% OFF Basics & Move","Vende mínimo 5 unidades (Basics/Move)."],
+  ["Denim Day 👖","Jeans a $29.99","La asociada que venda más jeans hoy se lleva el bonus."],
+  ["Mix & Match 📸","Cliente con 2+ productos","Logra 5 tickets con mínimo 2 productos distintos."],
+  ["Dress to Impress 👗","30% OFF Vestidos","Logra 3 facturas que incluyan al menos 1 vestido."],
+  ["PJ Party 🌙","30% OFF Pijamas","Vende 3 sets de pijamas (top + pant o nightshirt)."],
+  ["Big Finale 🎄","25% OFF Storewide","Supera tu UPT promedio semanal. Bonus: mayor UPT del día +3."]
 ];
 
-/* ===========================
-   LÓGICA DE DESBLOQUEO
-=========================== */
-function getUnlockedCount(date){
-  // Solo desbloquea en diciembre: del 1 al 12
-  if (date.getMonth() !== TARGET_MONTH) return 0;
-  const d = date.getDate();
-  if (d < START_DAY) return 0;
-  return Math.min(d - STARTDAY + 1, TOTAL_DAYS);
-}
-// Corrige variable (typo)
-const STARTDAY = START_DAY;
+// 🔓 Desbloqueo por fecha
+const params = new URLSearchParams(window.location.search);
+let sim = params.get("sim") ? new Date(params.get("sim")) : new Date();
+let unlocked = (sim.getMonth()===11)?Math.min(sim.getDate(),12):0;
 
-const grid = document.getElementById('grid');
-const unlocked = getUnlockedCount(today);
-
-for (let i=1; i<=TOTAL_DAYS; i++){
-  const card = document.createElement('div');
-  card.className = 'day';
-  const label = document.createElement('span');
-  label.className = 'label';
-  label.textContent = 'Haz clic';
-
-  const num = document.createElement('div');
-  num.textContent = i;
-
-  card.appendChild(num);
-  card.appendChild(label);
-
-  if (i > unlocked){
-    card.classList.add('locked');
-    const tip = document.createElement('div');
-    tip.className = 'tooltip';
-    tip.textContent = 'Disponible el día ' + i + ' de diciembre';
-    card.appendChild(tip);
-    card.addEventListener('click', ()=>{ /* bloqueado */ });
-  } else {
-    card.addEventListener('click', ()=> openModal(i));
-  }
-
-  grid.appendChild(card);
+// Render del calendario
+const cal = document.getElementById('calendar');
+for(let i=1;i<=12;i++){
+  const d=document.createElement('div');
+  d.className='day';
+  d.textContent=i;
+  if(i>unlocked) d.classList.add('locked');
+  d.onclick=()=>{ if(i<=unlocked) openModal(i); };
+  cal.appendChild(d);
 }
 
-/* ===========================
-   MODAL
-=========================== */
-const backdrop = document.getElementById('backdrop');
-const modal = document.getElementById('modal');
-const m_title = document.getElementById('m_title');
-const m_promo = document.getElementById('m_promo');
-const m_points = document.getElementById('m_points');
-const m_desc = document.getElementById('m_desc');
-const m_how = document.getElementById('m_how');
-const copyBtn = document.getElementById('copyBtn');
-const closeBtn = document.getElementById('closeBtn');
+// Modal funcional
+const modalBg=document.getElementById('modalBg');
+const closeModal=document.getElementById('closeModal');
+const mTitle=document.getElementById('mTitle');
+const mPromo=document.getElementById('mPromo');
+const mDesc=document.getElementById('mDesc');
 
-function openModal(dayNumber){
-  const idx = dayNumber-1;
-  const d = DAYS[idx];
-  m_title.textContent = `Día ${dayNumber} — ${d.title}`;
-  m_promo.textContent = d.promo;
-  m_points.textContent = d.points;
-  m_desc.textContent = d.desc;
-  m_how.textContent = d.how;
-
-  // Copiar reto
-  copyBtn.onclick = () => {
-    const text = `Día ${dayNumber} — ${d.title}\nPromo: ${d.promo}\nReto: ${d.desc}\nCómo se mide: ${d.how}\nPuntos: ${d.points}`;
-    navigator.clipboard.writeText(text).then(()=>{
-      copyBtn.textContent = "¡Copiado!";
-      setTimeout(()=> copyBtn.textContent = "Copiar reto", 1200);
-    });
-  };
-
-  backdrop.style.display = 'flex';
-  // forzar reflow para animación
-  void modal.offsetWidth;
-  modal.classList.add('open');
-  backdrop.setAttribute('aria-hidden','false');
+function openModal(i){
+  const r=retos[i-1];
+  mTitle.textContent=`Día ${i} — ${r[0]}`;
+  mPromo.textContent=r[1];
+  mDesc.textContent=r[2];
+  modalBg.style.display='flex';
 }
-function closeModal(){
-  modal.classList.remove('open');
-  setTimeout(()=>{
-    backdrop.style.display = 'none';
-    backdrop.setAttribute('aria-hidden','true');
-  },180);
-}
-backdrop.addEventListener('click',(e)=>{ if(e.target===backdrop) closeModal(); });
-closeBtn.addEventListener('click', closeModal);
-document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+closeModal.onclick=()=>modalBg.style.display='none';
+modalBg.onclick=e=>{if(e.target===modalBg) modalBg.style.display='none';};
 
-/* ===========================
-   NIEVE
-=========================== */
+// Reglas modal
+const rulesBg=document.getElementById('rulesBg');
+const closeRules=document.getElementById('closeRules');
+document.getElementById('rulesBtn').onclick=()=>rulesBg.style.display='flex';
+closeRules.onclick=()=>rulesBg.style.display='none';
+rulesBg.onclick=e=>{if(e.target===rulesBg) rulesBg.style.display='none';};
+
+// ❄️ Nieve
 (function snow(){
-  const s = document.getElementById('snow');
-  const flakes = 60; // ajusta densidad
-  for(let i=0;i<flakes;i++){
-    const f = document.createElement('div');
+  const s=document.getElementById('snow');
+  for(let i=0;i<60;i++){
+    const f=document.createElement('div');
     f.className='flake';
-    const size = 4 + Math.random()*6;
-    f.style.width=size+'px';
-    f.style.height=size+'px';
-    f.style.left = Math.random()*100 + 'vw';
-    f.style.animationDuration = (8 + Math.random()*10) + 's';
-    f.style.animationDelay = (Math.random()*5) + 's';
+    const size=4+Math.random()*6;
+    Object.assign(f.style,{
+      position:'absolute',
+      top:-10+'px',
+      left:Math.random()*100+'vw',
+      width:size+'px',
+      height:size+'px',
+      background:'#fff',
+      borderRadius:'50%',
+      opacity:0.8,
+      animation:`fall ${8+Math.random()*8}s linear infinite`,
+      animationDelay:Math.random()*5+'s'
+    });
     s.appendChild(f);
   }
 })();
+
+// ✨ Destellos dorados
+const canvas=document.getElementById('sparkles');
+const ctx=canvas.getContext('2d');
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}
+window.addEventListener('resize',resize);
+resize();
+const stars=Array.from({length:50},()=>({
+  x:Math.random()*canvas.width,
+  y:Math.random()*canvas.height,
+  r:Math.random()*1.5,
+  a:Math.random()
+}));
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s=>{
+    s.a+=0.02;
+    const glow=(Math.sin(s.a)*0.5+0.5)*0.8;
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,215,0,${glow})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(animate);
+}
+animate();
 </script>
 </body>
 </html>
